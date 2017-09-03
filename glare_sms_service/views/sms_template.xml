@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="glare_sms_service.sms_temp">
+        <field name="name">glare_sms_service sms_temp</field>
+        <field name="model">sms.templates</field>
+        <field name="arch" type="xml">
+          <form create="0">
+            <header>
+                <button name="send" class="oe_highlight" string="Send" type="object"/>
+            </header>
+            <group>
+                <group>
+                    <field name="to"/>
+                </group>
+                <group>
+                    <field name="line"/>
+                </group>
+                <field name="message"/>
+            </group>
+          </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="glare_sms_service.action_sms">
+      <field name="name">SMS</field>
+      <field name="res_model">sms.templates</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+          id= "glare_sms_service.sms"
+          sequence= "1"
+          name= "SMS"
+        />
+    <menuitem
+          id= "glare_sms_service.sms_sub"
+          parent= "glare_sms_service.sms"
+          sequence= "0"
+          name= "SMS"
+          action= "glare_sms_service.action_sms"
+
+        />
+
+</odoo>
