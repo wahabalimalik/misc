@@ -10,7 +10,7 @@
     'author': "Wahab Ali Malik",
     'website': "http://www.glareerp.com",
     'version': '0.1',
-    'depends': ['base','mail'],
+    'depends': ['base','mail','contacts'],
     'data': [
         'views/config.xml',
         'views/sms_template.xml',
