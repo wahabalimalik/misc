@@ -21,10 +21,10 @@ class SMS_Template(models.TransientModel):
         active_class =self.env['res.partner'].browse(self._context.get('active_ids'))
         if len(active_class) > 1:
             for rec in active_class:
-                if rec.phone != False:
-                    numbers = numbers + rec.phone + ','
+                if rec.mobile != False:
+                    numbers = numbers + rec.mobile + ','
         else:
-            numbers = numbers + active_class.phone
+            numbers = numbers + active_class.mobile
         self.to = numbers
 
     @api.constrains('message')
@@ -44,20 +44,33 @@ class SMS_Template(models.TransientModel):
         url = get_param('url', default='')
 
         if not ',' in number:
+            if number.startswith('05'):
+                line = 2
+            elif number.startswith('07'):
+                line = 3
+            else:
+                line = 1
             _logger.info(">>>> Sendings sms to number : %s" %(number))
             try:
-                urllib2.urlopen(url+'?u=%s&p=%s&l=%s&n=%s&m=%s' %(user,password,1,number,message))
+                urllib2.urlopen(url+'?u=%s&p=%s&l=%s&n=%s&m=%s' %(user,password,line,number,message))
                 _logger.info('>>>>>Message sent')
             except Exception as e:
                 raise ValidationError(_('Facing error something like : [%s]' %(e)))
         else:
             bulk_numbers = number.split(',')
             len_of_num = len(bulk_numbers)
-            for x in range(1,len_of_num):
+            for x in range(0,len_of_num):
                 if bulk_numbers[x] != '':
+                    if bulk_numbers[x].startswith('05'):
+                        line = 2
+                    elif bulk_numbers[x].startswith('07'):
+                        line = 3
+                    else:
+                        line = 1
+
                     _logger.info(">>>> Sendings sms to number : %s" %(bulk_numbers[x]))
                     try:
-                        urllib2.urlopen(url+'?u=%s&p=%s&l=%s&n=%s&m=%s' %(user,password,1,bulk_numbers[x],message))
+                        urllib2.urlopen(url+'?u=%s&p=%s&l=%s&n=%s&m=%s' %(user,password,line,bulk_numbers[x],message))
                         _logger.info('>>>>>Message sent')
                     except Exception as e:
                         raise ValidationError(_('Facing error something like : [%s]' %(e)))

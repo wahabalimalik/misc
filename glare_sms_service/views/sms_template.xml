@@ -19,9 +19,7 @@
           <group>
             <field name="to"/>
           </group>
-          <group>
-            <!-- <field name="line"/> -->
-          </group>
+          <group></group>
           <field name="message"/>
         </group>
         <footer>
@@ -41,10 +39,15 @@
     </field>
   </record>
 
-  <record model="ir.actions.act_window" id="glare_sms_service.action_sms">
-    <field name="name">SMS</field>
-    <field name="res_model">sms.templates</field>
-    <field name="view_mode">tree,form</field>
+  <record model="ir.ui.view" id="glare_sms_service.contact_tree_ext">
+    <field name="name">glare_sms_service contact_tree_ext</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_tree"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='phone']" position="replace">
+        <field name="mobile"/>
+      </xpath>
+    </field>
   </record>
 
 </odoo>
