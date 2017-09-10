@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="partner_instructor_form_view">
+      <field name="name">partner.instructor</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='category_id']" position="after">
+          <field name="suburb"/>
+          <field name="date_client_contact"/>
+        </xpath>
+        <xpath expr="//field[@name='lang']" position="after">
+          <field name="source_contact"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="appointment_form_view">
+      <field name="name">appointment.set.form</field>
+      <field name="model">appointment.set</field>
+      <field name="arch" type="xml">
+        <form string="Appoint Form">
+          <header>
+            <button name="action_confirm" string="Confirm Sale" class="btn-primary o_sale_confirm" type="object" />
+          </header>
+          <sheet>
+            <group>
+              <group>
+                <field name="name"/>
+                <field name="appoint_date"/>
+                <field name="presentation_date"/>
+                <field name="job_oppor" widget="selection"/>
+              </group>
+              <group>
+                <field name="budget"/>
+                <field name="description"/>
+                <field name="sale_person"/>
+                <field name="appoint_notes"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="appointment_tree_view">
+      <field name="name">appointment.set.tree</field>
+      <field name="model">appointment.set</field>
+      <field name="arch" type="xml">
+        <tree string="Appointment Form">
+          <field name="name"/>
+          <field name="appoint_date"/>
+          <field name="presentation_date"/>
+          <field name="job_oppor"/>
+          <field name="budget"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- Sales form and tree view and actions -->
+
+    <record model="ir.ui.view" id="sale_form_view">
+      <field name="name">sale.badel.form</field>
+      <field name="model">sale.badel</field>
+      <field name="arch" type="xml">
+        <form string="Sales Form">
+          <sheet>
+            <group>
+              <field name="name" String="Sale Order #"/>
+              <field name="balance"/>
+              <group>
+                <field name="customer_name"/>
+                <field name="sale_approved_date"/>
+                <field name="sale_person"/>
+                <field name="payment_type"/>
+                <field name="sale_budget"/>
+                <field name="delivery_type"/>
+                <field name="varient"/>
+              </group>
+              <group>
+                <field name="date_approved"/>
+                <field name="completion_date"/>
+                <field name="completed_job"/>
+                <field name="invoiced_job"/>
+                <field name="filled_job"/>
+              </group>
+            </group>
+             <notebook>
+            
+              <page string="Payment History">
+                <field name="payment">
+                    <tree editable="bottom">
+                        <field name="date"/>
+                        <field name="payment"/>
+                    </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="sale_tree_view">
+        <field name="name">sale.set.tree</field>
+        <field name="model">sale.badel</field>
+        <field name="arch" type="xml">
+          <tree string="Sales Tree">
+            <field name="name" String="Sale Order #"/>
+            <field name="customer_name"/>
+            <field name="sale_budget"/>
+            <field name="balance"/>
+            <field name="completion_date"/>
+            <field name="completed_job"/>
+            <field name="invoiced_job"/>
+          </tree>
+        </field>
+    </record> 
+   
+
+    <record model="ir.actions.act_window" id="action_list_sales">
+        <field name="name">Sales</field>
+        <field name="res_model">sale.badel</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_list_appointments">
+        <field name="name">Appointments</field>
+        <field name="res_model">appointment.set</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+        <!-- end of sale views -->
+        <menuitem id="main_appointment_menu" action="action_list_appointments"  name="Appointments"/>
+        <menuitem id="main_sale_menu" action="action_list_sales"  name="Sales"/>
+    </data> 
+</odoo>
