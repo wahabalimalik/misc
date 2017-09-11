@@ -22,7 +22,12 @@
       <field name="arch" type="xml">
         <form string="Appoint Form">
           <header>
-            <button name="action_confirm" string="Confirm Sale" class="btn-primary o_sale_confirm" type="object" />
+            <button name="action_confirm" string="Won" class="btn-primary o_sale_confirm" type="object" />
+            <!-- <button name="btn_draft_to_prepared" type="object" string="Called"  attrs="{'invisible': [('state','!=','call')]}"/> -->
+
+            <button name="queru_subbmitted_btn" type="object" string="Not Called" attrs="{'invisible': [('state','!=','not_yet')]}"/>
+
+            <field name="state" widget="statusbar"/>
           </header>
           <sheet>
             <group>
@@ -33,6 +38,7 @@
                 <field name="job_oppor" widget="selection"/>
               </group>
               <group>
+                <!-- <field name="call_status"/> -->
                 <field name="budget"/>
                 <field name="description"/>
                 <field name="sale_person"/>
@@ -65,6 +71,9 @@
       <field name="model">sale.badel</field>
       <field name="arch" type="xml">
         <form string="Sales Form">
+          <header>
+            <button name="action_confirm" string="Approved To Design" class="btn-primary o_sale_confirm" type="object" />
+          </header>
           <sheet>
             <group>
               <field name="name" String="Sale Order #"/>
@@ -79,11 +88,13 @@
                 <field name="varient"/>
               </group>
               <group>
+                <field name="urgent"/>
                 <field name="date_approved"/>
                 <field name="completion_date"/>
                 <field name="completed_job"/>
                 <field name="invoiced_job"/>
                 <field name="filled_job"/>
+                <field name="notes"/>
               </group>
             </group>
              <notebook>
@@ -109,7 +120,8 @@
           <tree string="Sales Tree">
             <field name="name" String="Sale Order #"/>
             <field name="customer_name"/>
-            <field name="sale_budget"/>
+            <field name="urgent"/>
+            <!-- <field name="sale_budget"/> -->
             <field name="balance"/>
             <field name="completion_date"/>
             <field name="completed_job"/>
@@ -118,7 +130,98 @@
         </field>
     </record> 
    
+   <!-- Desgin Sheet -->
 
+    <record model="ir.ui.view" id="desiign_form_view">
+      <field name="name">design.badel.form</field>
+      <field name="model">design.badel</field>
+      <field name="arch" type="xml">
+        <form string="Design Form">
+          <sheet>
+            <button name="action_confirm" string="Mark As Completed" class="btn-primary o_sale_confirm" type="object" />        
+            <group>
+              <group>
+              <field name="name"/>
+              <field name="start_date"/>
+              <field name="sales_person"/>
+              </group>
+              <group>
+              <field name="urgent"/>
+              <field name="customer_name"/>
+              <field name="job_status"/>
+              <field name="notes"/>
+            </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="design_tree_view">
+        <field name="name">design.badel.tree</field>
+        <field name="model">design.badel</field>
+        <field name="arch" type="xml">
+          <tree string="Design Tree">
+              <field name="name"/>
+              <field name="start_date"/>
+              <field name="urgent"/>
+              <field name="sales_person"/>
+              <field name="customer_name"/>
+              <field name="job_status"/>
+          </tree>
+        </field>
+    </record>
+    <!-- Design view end -->
+    <!-- Prodcut view start -->
+
+    <record model="ir.ui.view" id="production_form_view">
+      <field name="name">production.badel.form</field>
+      <field name="model">production.badel</field>
+      <field name="arch" type="xml">
+        <form string="Production Form">
+          <sheet>
+            <button name="action_confirm" string="Mark As Completed" class="btn-primary o_sale_confirm" type="object" />
+            <group>
+              <group>
+              <field name="name"/>
+              <field name="start_date"/>
+              <field name="cutting_date"/>
+              <field name="edging_date"/>
+              <field name="assembly_date"/>
+              <field name="poly_picked_date"/>
+              <field name="poly_dropped_date"/>
+              <field name="quality_control_date"/>
+              </group>
+              <group>
+              <field name="delivery_date"/>
+              <field name="ready_to_invoice"/>
+              <field name="invoiced"/>
+              <field name="urgent"/>
+              <field name="job_status"/>
+              <field name="department"/>
+              <field name="notes"/>
+            </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="production_tree_view">
+        <field name="name">production.badel.tree</field>
+        <field name="model">production.badel</field>
+        <field name="arch" type="xml">
+          <tree string="Design Tree">
+              <field name="name"/>
+              <field name="start_date"/>
+              <field name="urgent"/>
+              <field name="delivery_date"/>
+              <field name="job_status"/>
+              <field name="department"/>
+          </tree>
+        </field>
+    </record>
+    <!-- prodcut view end -->
     <record model="ir.actions.act_window" id="action_list_sales">
         <field name="name">Sales</field>
         <field name="res_model">sale.badel</field>
@@ -130,8 +233,22 @@
         <field name="res_model">appointment.set</field>
         <field name="view_mode">tree,form</field>
     </record>
-        <!-- end of sale views -->
-        <menuitem id="main_appointment_menu" action="action_list_appointments"  name="Appointments"/>
-        <menuitem id="main_sale_menu" action="action_list_sales"  name="Sales"/>
-    </data> 
+        
+    <record model="ir.actions.act_window" id="action_list_design">
+      <field name="name">Design Phase</field>
+      <field name="res_model">design.badel</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    
+    <record model="ir.actions.act_window" id="action_list_production">
+        <field name="name">Production Phase</field>
+        <field name="res_model">production.badel</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <!-- end of sale views -->
+    <menuitem id="main_appointment_menu" action="action_list_appointments"  name="Appointments"/>
+    <menuitem id="main_sale_menu" action="action_list_sales"  name="Sales"/>
+    <menuitem id="main_desining_menu" action="action_list_design"  name="Designing"/>
+    <menuitem id="main_production_menu" action="action_list_production"  name="Production"/>
+  </data> 
 </odoo>

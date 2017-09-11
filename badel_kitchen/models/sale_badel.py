@@ -13,12 +13,14 @@ class Salebadel(models.Model):
 	customer_name = fields.Many2one('res.partner','Customer')
 	delivery_type = fields.Selection([('p','Pick up'),('d','Delivery')],default='d',string="Delivery Type")
 	date_approved = fields.Date()
-	completion_date = fields.Date()
+	completion_date = fields.Date('Due Date')
 	completed_job = fields.Selection([('y','Yes'),('n','No')],string="Job Completed")
 	invoiced_job = fields.Selection([('y','Yes'),('n','No')],string="Job Invoiced")
 	filled_job = fields.Selection([('y','Yes'),('n','No')],string="Job Filled")
 	varient = fields.Float('Variant')
 	payment = fields.One2many('sale.badel.line','sale_id')
+	urgent = fields.Selection([('y','Yes'),('n','No')],string="Urgent")
+	notes = fields.Text()
 
 	@api.multi
 	@api.depends('varient','payment')
@@ -31,6 +33,27 @@ class Salebadel(models.Model):
 		if self.payment:
 			for x in self.payment:
 				self.balance = self.balance - x.payment
+
+	@api.multi
+	def action_confirm(self):
+		print "ddddddddddddddddddddddddd"
+		self.ensure_one()
+		design = self.env['design.badel']
+		if len(design) > 1:
+			for x in design:
+				x.create({
+		            'name': self.name,
+		            'sales_person': self.sale_person.id,
+		            'customer_name': self.customer_name.id,
+		            'urgent':self.urgent,
+		        })
+		else:
+			design.create({
+		            'name': self.name,
+		            'sales_person': self.sale_person.id,
+		            'customer_name': self.customer_name.id,
+		            'urgent': self.urgent,
+		        })
 
 class SalebadelTree(models.Model):
 	_name='sale.badel.line'
