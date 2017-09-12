@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+  <record id="group_add_varient" model="res.groups">
+      <field name="name">Add Varient</field>
+      <field name="category_id" ref="base.module_category_hidden"/>
+  </record>
+  <record id="group_add_payment" model="res.groups">
+      <field name="name">Add payment</field>
+      <field name="category_id" ref="base.module_category_hidden"/>
+  </record>
   <data>
     <record model="ir.ui.view" id="partner_instructor_form_view">
       <field name="name">partner.instructor</field>
@@ -22,8 +30,7 @@
       <field name="arch" type="xml">
         <form string="Appoint Form">
           <header>
-            <button name="action_confirm" string="Won" class="btn-primary o_sale_confirm" type="object" />
-            <!-- <button name="btn_draft_to_prepared" type="object" string="Called"  attrs="{'invisible': [('state','!=','call')]}"/> -->
+            <button name="action_confirm" string="Won" class="btn-primary o_sale_confirm" type="object"  attrs="{'invisible': [('switch','!=', 'onn')]}"/>
 
             <button name="queru_subbmitted_btn" type="object" string="Not Called" attrs="{'invisible': [('state','!=','not_yet')]}"/>
 
@@ -33,6 +40,7 @@
             <group>
               <group>
                 <field name="name"/>
+                <field name="switch"  invisible="1"/>
                 <field name="appoint_date"/>
                 <field name="presentation_date"/>
                 <field name="job_oppor" widget="selection"/>
@@ -66,13 +74,13 @@
 
     <!-- Sales form and tree view and actions -->
 
-    <record model="ir.ui.view" id="sale_form_view">
-      <field name="name">sale.badel.form</field>
+    <record model="ir.ui.view" id="sale_form_view_1">
+      <field name="name">sale.badel.form_1</field>
       <field name="model">sale.badel</field>
       <field name="arch" type="xml">
         <form string="Sales Form">
           <header>
-            <button name="action_confirm" string="Approved To Design" class="btn-primary o_sale_confirm" type="object" />
+            <button name="action_confirm" string="Approved For Design" class="btn-primary o_sale_confirm" type="object" />
           </header>
           <sheet>
             <group>
@@ -82,30 +90,33 @@
                 <field name="customer_name"/>
                 <field name="sale_approved_date"/>
                 <field name="sale_person"/>
-                <field name="payment_type"/>
+                <field name="payment_type" widget="radio"/>
                 <field name="sale_budget"/>
-                <field name="delivery_type"/>
-                <field name="varient"/>
-              </group>
-              <group>
-                <field name="urgent"/>
-                <field name="date_approved"/>
-                <field name="completion_date"/>
-                <field name="completed_job"/>
-                <field name="invoiced_job"/>
-                <field name="filled_job"/>
+                <field name="delivery_type" widget="radio"/>
                 <field name="notes"/>
               </group>
+              <group>
+                <field name="urgent" widget="radio"/>
+                <field name="completion_date"/>
+              </group>
             </group>
-             <notebook>
+            <notebook>
             
               <page string="Payment History">
-                <field name="payment">
+                <field name="payment" groups="badel_kitchen.group_add_payment">
                     <tree editable="bottom">
                         <field name="date"/>
                         <field name="payment"/>
                     </tree>
                 </field>
+              </page>
+              <page string="Variant History">
+                  <field name="varient" groups="badel_kitchen.group_add_varient">
+                    <tree editable="bottom">
+                      <field name="date"/>
+                      <field name="varient"/>
+                    </tree>
+                  </field>
               </page>
             </notebook>
           </sheet>
@@ -113,22 +124,19 @@
       </field>
     </record>
 
-    <record model="ir.ui.view" id="sale_tree_view">
-        <field name="name">sale.set.tree</field>
-        <field name="model">sale.badel</field>
-        <field name="arch" type="xml">
-          <tree string="Sales Tree">
-            <field name="name" String="Sale Order #"/>
-            <field name="customer_name"/>
-            <field name="urgent"/>
-            <!-- <field name="sale_budget"/> -->
-            <field name="balance"/>
-            <field name="completion_date"/>
-            <field name="completed_job"/>
-            <field name="invoiced_job"/>
-          </tree>
-        </field>
-    </record> 
+   <record model="ir.ui.view" id="badel_kitchen.sale_tree_glare">
+      <field name="name">badel_kitchen sale_tree_glare</field>
+      <field name="model">sale.badel</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="customer_name"/>
+          <field name="sale_approved_date"/>
+          <field name="sale_person"/>
+          <field name="job_status"/>
+          <field name="sale_budget"/>
+        </tree>
+      </field>
+    </record>
    
    <!-- Desgin Sheet -->
 
@@ -146,6 +154,7 @@
               <field name="sales_person"/>
               </group>
               <group>
+              <field name="completion_date"/> 
               <field name="urgent"/>
               <field name="customer_name"/>
               <field name="job_status"/>
@@ -180,7 +189,7 @@
       <field name="arch" type="xml">
         <form string="Production Form">
           <sheet>
-            <button name="action_confirm" string="Mark As Completed" class="btn-primary o_sale_confirm" type="object" />
+            <button name="action_confirm" string="Ready To Deliver" class="btn-primary o_sale_confirm" type="object" />
             <group>
               <group>
               <field name="name"/>
@@ -193,9 +202,7 @@
               <field name="quality_control_date"/>
               </group>
               <group>
-              <field name="delivery_date"/>
-              <field name="ready_to_invoice"/>
-              <field name="invoiced"/>
+              <field name="completion_date"/>
               <field name="urgent"/>
               <field name="job_status"/>
               <field name="department"/>
@@ -215,17 +222,18 @@
               <field name="name"/>
               <field name="start_date"/>
               <field name="urgent"/>
-              <field name="delivery_date"/>
+              <field name="completion_date"/>
               <field name="job_status"/>
               <field name="department"/>
           </tree>
         </field>
     </record>
     <!-- prodcut view end -->
-    <record model="ir.actions.act_window" id="action_list_sales">
-        <field name="name">Sales</field>
-        <field name="res_model">sale.badel</field>
-        <field name="view_mode">tree,form</field>
+
+    <record model="ir.actions.act_window" id="action_list_sales_1">
+          <field name="name">Sales</field>
+          <field name="res_model">sale.badel</field>
+          <field name="view_mode">tree,form</field>
     </record>
 
     <record model="ir.actions.act_window" id="action_list_appointments">
@@ -247,7 +255,7 @@
     </record>
     <!-- end of sale views -->
     <menuitem id="main_appointment_menu" action="action_list_appointments"  name="Appointments"/>
-    <menuitem id="main_sale_menu" action="action_list_sales"  name="Sales"/>
+    <menuitem id="main_sale_menu" action="action_list_sales_1"  name="Sales"/>
     <menuitem id="main_desining_menu" action="action_list_design"  name="Designing"/>
     <menuitem id="main_production_menu" action="action_list_production"  name="Production"/>
   </data> 

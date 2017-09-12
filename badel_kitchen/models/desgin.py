@@ -11,3 +11,16 @@ class Desingbadel(models.Model):
 	job_status = fields.Selection([('1','1st Drawing'),('2','2nd Drawing'),('a','Approved'),('n','Nested')],string="Working Status")
 	urgent = fields.Char(readonly="1")
 	notes = fields.Text()
+	today = fields.Date().today()
+	completion_date = fields.Date('Due Date',readonly="1")
+	
+	@api.multi
+	def action_confirm(self):
+		self.ensure_one()
+		production = self.env['production.badel']
+		production.create({
+					'start_date': self.today,
+					'urgent': self.urgent,
+					'name': self.name,
+					'completion_date': self.completion_date
+		        })

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 import datetime
 
 class appointmetSet(models.Model):
@@ -9,44 +9,46 @@ class appointmetSet(models.Model):
 	appoint_date = fields.Datetime(string="Appoint Date")
 	presentation_date = fields.Datetime(string="Presentation Date")
 	job_oppor = fields.Selection([('high','High'),('low','Low'),('normal','Normal')],default='normal',string="Opportunity")
-	appoint_notes = fields.Text()
+	appoint_notes = fields.Text('Important Notes')
 	sale_person = fields.Many2one('res.users','Sale Person',required=True)
-	budget = fields.Integer()
+	budget = fields.Float()
 	description = fields.Char(string="Description of Work")
 	call_status = fields.Selection([('y','Yes'),('n','No')],string="Called Customer")
+	today = fields.Date().today()
+	completion_date = fields.Date('Due Date')
+	invoice_ids = fields.Many2many("sale.badel")
 	state     = fields.Selection([
         ('not_yet','Not Called'),
 		('call','Call'),
         ],default='not_yet')
+	switch = fields.Selection([
+        ('onn','ONN'),
+		('off','OFF'),
+        ],default='onn')
 
 	def queru_subbmitted_btn(self):
 		return self.write({'state' : 'call'})
 
 	@api.multi
 	def action_confirm(self):
-		self.ensure_one()
-		sale = self.env['sale.badel']
-		if len(sale) > 1:
-			for x in sale:
-				x.create({
-		            'customer_name': self.name.id,
-		            'sale_person': self.sale_person.id,
-		            'sale_budget': self.budget,
-		            'name': 'Order # %s' %(self.id),
-		        })
-		else:
-			sale.create({
-		            'customer_name': self.name.id,
-		            'sale_person': self.sale_person.id,
-		            'sale_budget': self.budget,
-		            'name': 'Order # %s' %(self.id),
-		        })
+		self.env['sale.badel'].create({
+				'id' : self.id,
+				'customer_name': self.name.id,
+	            'sale_person': self.sale_person.id,
+	            'sale_budget': self.budget,
+	            'name': 'Order # %s' %(self.id),
+	            'sale_approved_date': self.today,
+	            'completion_date': self.completion_date,
 
-		# return {
-	 #        'view_type': 'form',
-	 #        'view_mode': 'form',
-	 #        'res_model': 'sale.badel',
-	 #        'target': 'current',
-	 #        'res_id': self.env.ref('action_list_sales'),
-	 #        'type': 'ir.actions.act_window'
-	 #    }
+	        })
+		self.write({'switch': 'off'})
+		return {
+			'name':_('badel_kitchen sale_tree_glare'),
+			'view_mode': 'form',
+			'view_id': False,
+			'views': [(self.env.ref('badel_kitchen.sale_form_view_1').id,'form')],
+			'view_type': 'form',
+			'res_id' : self.id,
+			'res_model': 'sale.badel',
+			'type': 'ir.actions.act_window',
+		}
