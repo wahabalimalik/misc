@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import urllib2
+import urllib2,time
 
 import logging
 from odoo import models, fields, api,_
@@ -43,36 +43,34 @@ class SMS_Template(models.TransientModel):
         line = self.line
         url = get_param('url', default='')
 
-        # if not ',' in number:
-        number = number[:-1]
-        print number
-        if number.startswith('05'):
-            line = 2
-        elif number.startswith('07'):
-            line = 3
+        if not ',' in number:
+            number = number[:-1]
+            if number.startswith('05'):
+                line = 2
+            elif number.startswith('07'):
+                line = 3
+            else:
+                line = 1
+            _logger.info(">>>> Sendings sms to number : %s" %(number))
+            try:
+                urllib2.urlopen(url+'?u=%s&p=%s&l=%s&n=%s&m=%s' %(user,password,line,number,message))
+                _logger.info('>>>>>Message sent')
+            except Exception as e:
+                raise ValidationError(_('Facing error something like : [%s]' %(e)))
         else:
-            line = 1
-        _logger.info(">>>> Sendings sms to number : %s" %(number))
-        try:
-            urllib2.urlopen(url+'?u=%s&p=%s&l=%s&n=%s&m=%s' %(user,password,line,number,message))
-            _logger.info('>>>>>Message sent')
-        except Exception as e:
-            raise ValidationError(_('Facing error something like : [%s]' %(e)))
-        # else:
-        #     bulk_numbers = number.split(',')
-        #     len_of_num = len(bulk_numbers)
-        #     for x in range(0,len_of_num):
-        #         if bulk_numbers[x] != '':
-        #             if bulk_numbers[x].startswith('05'):
-        #                 line = 2
-        #             elif bulk_numbers[x].startswith('07'):
-        #                 line = 3
-        #             else:
-        #                 line = 1
+            bulk_numbers = number.split(',')
+            for x in bulk_numbers[:-1]:
+                if x.startswith('05'):
+                    line = 2
+                elif x.startswith('07'):
+                    line = 3
+                else:
+                    line = 1
 
-        #             _logger.info(">>>> Sendings sms to number : %s" %(bulk_numbers[x]))
-        #             try:
-        #                 urllib2.urlopen(url+'?u=%s&p=%s&l=%s&n=%s&m=%s' %(user,password,line,bulk_numbers[x],message))
-        #                 _logger.info('>>>>>Message sent')
-        #             except Exception as e:
-        #                 raise ValidationError(_('Facing error something like : [%s]' %(e)))
+                _logger.info(">>>> Sendings sms to number : %s" %(x))
+                try:
+                    urllib2.urlopen(url+'?u=%s&p=%s&l=%s&n=%s&m=%s' %(user,password,line,x,message))
+                    _logger.info('>>>>>Message sent')
+                    time.sleep( 5 )
+                except Exception as e:
+                    raise ValidationError(_('Facing error something like : [%s]' %(e)))
