@@ -4,6 +4,7 @@ from odoo import models, fields, api
 class Salebadel(models.Model):
 	_name='sale.badel'
 
+
 	name = fields.Char('Sequence',readonly="1")
 	sale_approved_date = fields.Date()
 	sale_person = fields.Many2one('res.users','Sale Person')
@@ -49,6 +50,9 @@ class Salebadel(models.Model):
             'start_date': self.today,
             'completion_date': self.completion_date
         })
+
+	sequence = fields.Integer(string ='Sequence')
+	_order   = 'sequence'
 
 class SalebadelTree(models.Model):
 	_name='sale.badel.line'

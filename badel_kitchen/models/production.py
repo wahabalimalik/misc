@@ -24,4 +24,5 @@ class Productbadel(models.Model):
 		design = self.env['sale.badel'].search([('name' ,'=',self.name)])
 		design.write({'job_status': self.job_status})
 
-
+	sequence = fields.Integer(string ='Sequence')
+	_order   = 'sequence'

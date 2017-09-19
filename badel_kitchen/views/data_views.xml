@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+  <template id="assets_button_ext" name="badel_kitchen assets button" inherit_id="web.assets_backend" >
+    <xpath expr="." position="inside">
+      <script type="text/javascript" src="/badel_kitchen/static/src/js/widget_button.js"></script>
+    </xpath>
+  </template>
+
   <record id="group_add_varient" model="res.groups">
       <field name="name">Add Varient</field>
       <field name="category_id" ref="base.module_category_hidden"/>
@@ -8,6 +14,7 @@
       <field name="name">Add payment</field>
       <field name="category_id" ref="base.module_category_hidden"/>
   </record>
+  
   <data>
     <record model="ir.ui.view" id="partner_instructor_form_view">
       <field name="name">partner.instructor</field>
@@ -31,6 +38,7 @@
         <form string="Appoint Form">
           <header>
             <button name="action_confirm" string="Won" class="btn-primary o_sale_confirm" type="object"  attrs="{'invisible': [('switch','!=', 'onn')]}"/>
+            <button name="action_confirm_undo" string="Undo Won" class="btn-primary o_sale_confirm" type="object"  attrs="{'invisible': [('switch','!=', 'off')]}"/>
 
             <button name="queru_subbmitted_btn" type="object" string="Not Called" attrs="{'invisible': [('state','!=','not_yet')]}"/>
 
@@ -46,8 +54,8 @@
                 <field name="job_oppor" widget="selection"/>
               </group>
               <group>
-                <!-- <field name="call_status"/> -->
                 <field name="budget"/>
+                <field name="currency_id" invisible="1"/>
                 <field name="description"/>
                 <field name="sale_person"/>
                 <field name="appoint_notes"/>
@@ -63,11 +71,13 @@
       <field name="model">appointment.set</field>
       <field name="arch" type="xml">
         <tree string="Appointment Form">
-          <field name="name"/>
+          <field name="sequence" widget="handle" />
           <field name="appoint_date"/>
+          <field name="sale_person"/>
+          <field name="budget"/>
+          <field name="name"/>
           <field name="presentation_date"/>
           <field name="job_oppor"/>
-          <field name="budget"/>
         </tree>
       </field>
     </record>
@@ -83,9 +93,13 @@
             <button name="action_confirm" string="Approved For Design" class="btn-primary o_sale_confirm" type="object" />
           </header>
           <sheet>
+            <div class="oe_title">
+                <h1>
+                    <field name="name" String="Sale Order #" readonly="1"/>
+                </h1>
+            </div>
+            <field name="balance"/>
             <group>
-              <field name="name" String="Sale Order #"/>
-              <field name="balance"/>
               <group>
                 <field name="customer_name"/>
                 <field name="sale_approved_date"/>
@@ -128,12 +142,17 @@
       <field name="name">badel_kitchen sale_tree_glare</field>
       <field name="model">sale.badel</field>
       <field name="arch" type="xml">
-        <tree>
-          <field name="customer_name"/>
+        <tree decoration-info="job_status == 'f'">
+          <field name="sequence" widget="handle" />
           <field name="sale_approved_date"/>
+          <field name="customer_name"/>
+          <field name="name"/>
           <field name="sale_person"/>
-          <field name="job_status"/>
           <field name="sale_budget"/>
+          <field name="balance"/>
+          <field name="job_status"/>
+          <field name="invoiced_job"/>
+          <field name="filled_job"/>
         </tree>
       </field>
     </record>
@@ -171,6 +190,7 @@
         <field name="model">design.badel</field>
         <field name="arch" type="xml">
           <tree string="Design Tree">
+              <field name="sequence" widget="handle" />
               <field name="name"/>
               <field name="start_date"/>
               <field name="urgent"/>
@@ -219,6 +239,7 @@
         <field name="model">production.badel</field>
         <field name="arch" type="xml">
           <tree string="Design Tree">
+            <field name="sequence" widget="handle" />
               <field name="name"/>
               <field name="start_date"/>
               <field name="urgent"/>
@@ -254,9 +275,9 @@
         <field name="view_mode">tree,form</field>
     </record>
     <!-- end of sale views -->
-    <menuitem id="main_appointment_menu" action="action_list_appointments"  name="Appointments"/>
-    <menuitem id="main_sale_menu" action="action_list_sales_1"  name="Sales"/>
-    <menuitem id="main_desining_menu" action="action_list_design"  name="Designing"/>
-    <menuitem id="main_production_menu" action="action_list_production"  name="Production"/>
+    <menuitem id="main_appointment_menu" web_icon="note,static/description/icon.png" action="action_list_appointments"  name="Appointments"/>
+    <menuitem id="main_sale_menu" web_icon="sale,static/description/icon.png" action="action_list_sales_1"  name="Sales"/>
+    <menuitem id="main_desining_menu" web_icon="project,static/description/icon.png" action="action_list_design"  name="Designing"/>
+    <menuitem id="main_production_menu" web_icon="mrp,static/description/icon.png" action="action_list_production"  name="Production"/>
   </data> 
 </odoo>

@@ -11,7 +11,8 @@ class appointmetSet(models.Model):
 	job_oppor = fields.Selection([('high','High'),('low','Low'),('normal','Normal')],default='normal',string="Opportunity")
 	appoint_notes = fields.Text('Important Notes')
 	sale_person = fields.Many2one('res.users','Sale Person',required=True)
-	budget = fields.Float()
+	currency_id = fields.Many2one('res.currency', string='Currency', default=3)
+	budget = fields.Monetary(currency_field='currency_id',string='Budget Currently')
 	description = fields.Char(string="Description of Work")
 	call_status = fields.Selection([('y','Yes'),('n','No')],string="Called Customer")
 	today = fields.Date().today()
@@ -52,3 +53,10 @@ class appointmetSet(models.Model):
 			'res_model': 'sale.badel',
 			'type': 'ir.actions.act_window',
 		}
+	@api.multi
+	def action_confirm_undo(self):
+		rec = self.env['sale.badel'].search([('id','=', self.id)]).unlink()
+		self.write({'switch': 'onn'})
+
+	sequence = fields.Integer(string ='Sequence')
+	_order   = 'sequence'

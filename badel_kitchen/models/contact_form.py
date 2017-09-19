@@ -5,7 +5,7 @@ class Partner(models.Model):
 	_inherit='res.partner'
 
 	suburb = fields.Many2one('res.suburb')
-	source_contact = fields.Char('"Contact From"')
+	source_contact = fields.Char('Contact From')
 	date_client_contact = fields.Date("Client First Contact")
 
 class Suburb(models.Model):

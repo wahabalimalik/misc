@@ -12,3 +12,6 @@ class SummaryBadel(models.Model):
 	job_status = fields.Selection([('q','Queue'),('f','Finished'),('in','In Production')],string="Job status")
 	invoiced = fields.Selection([('y','Yes'),('n','No')],string="Invoiced")
 	department = fields.Selection([('a','Appointment'),('s','Sale'),('d','Design'),('p','Production')],string="Departement")
+
+	sequence = fields.Integer(string ='Sequence')
+	_order   = 'sequence'

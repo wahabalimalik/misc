@@ -24,3 +24,6 @@ class Desingbadel(models.Model):
 					'name': self.name,
 					'completion_date': self.completion_date
 		        })
+
+	sequence = fields.Integer(string ='Sequence')
+	_order   = 'sequence'
