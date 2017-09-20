@@ -3,6 +3,7 @@
   <template id="assets_button_ext" name="badel_kitchen assets button" inherit_id="web.assets_backend" >
     <xpath expr="." position="inside">
       <script type="text/javascript" src="/badel_kitchen/static/src/js/widget_button.js"></script>
+      <link rel="stylesheet" type="text/css" href="/badel_kitchen/static/badel.css"/>
     </xpath>
   </template>
 
@@ -70,12 +71,14 @@
       <field name="name">appointment.set.tree</field>
       <field name="model">appointment.set</field>
       <field name="arch" type="xml">
-        <tree string="Appointment Form">
+        <tree string="Appointment Form" decoration-danger="state == 'call'">
           <field name="sequence" widget="handle" />
           <field name="appoint_date"/>
           <field name="sale_person"/>
           <field name="budget"/>
           <field name="name"/>
+          <field name="state" invisible='1'/>
+
           <field name="presentation_date"/>
           <field name="job_oppor"/>
         </tree>
@@ -138,7 +141,9 @@
       </field>
     </record>
 
-   <record model="ir.ui.view" id="badel_kitchen.sale_tree_glare">
+   
+
+    <record model="ir.ui.view" id="badel_kitchen.sale_tree_glare">
       <field name="name">badel_kitchen sale_tree_glare</field>
       <field name="model">sale.badel</field>
       <field name="arch" type="xml">
@@ -148,7 +153,7 @@
           <field name="customer_name"/>
           <field name="name"/>
           <field name="sale_person"/>
-          <field name="sale_budget"/>
+          <field name="total_budget"/>
           <field name="balance"/>
           <field name="job_status"/>
           <field name="invoiced_job"/>

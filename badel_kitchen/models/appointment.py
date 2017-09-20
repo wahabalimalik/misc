@@ -6,7 +6,7 @@ class appointmetSet(models.Model):
 	_name='appointment.set'
 
 	name = fields.Many2one('res.partner','Customer',required=True)
-	appoint_date = fields.Datetime(string="Appoint Date")
+	appoint_date = fields.Datetime(string="Appoint Date",default=lambda self: fields.datetime.now())
 	presentation_date = fields.Datetime(string="Presentation Date")
 	job_oppor = fields.Selection([('high','High'),('low','Low'),('normal','Normal')],default='normal',string="Opportunity")
 	appoint_notes = fields.Text('Important Notes')
@@ -18,7 +18,10 @@ class appointmetSet(models.Model):
 	today = fields.Date().today()
 	completion_date = fields.Date('Due Date')
 	invoice_ids = fields.Many2many("sale.badel")
-	state     = fields.Selection([
+	# states_by_color = fields.Selection([
+	# 	('1' , 'call'),
+	# 	])
+	state = fields.Selection([
         ('not_yet','Not Called'),
 		('call','Call'),
         ],default='not_yet')
@@ -43,16 +46,16 @@ class appointmetSet(models.Model):
 
 	        })
 		self.write({'switch': 'off'})
-		return {
-			'name':_('badel_kitchen sale_tree_glare'),
-			'view_mode': 'form',
-			'view_id': False,
-			'views': [(self.env.ref('badel_kitchen.sale_form_view_1').id,'form')],
-			'view_type': 'form',
-			'res_id' : self.id,
-			'res_model': 'sale.badel',
-			'type': 'ir.actions.act_window',
-		}
+		# return {
+		# 	'name':_('badel_kitchen sale_tree_glare'),
+		# 	'view_mode': 'form',
+		# 	'view_id': False,
+		# 	'views': [(self.env.ref('badel_kitchen.sale_form_view_1').id,'form')],
+		# 	'view_type': 'form',
+		# 	'res_id' : self.id,
+		# 	'res_model': 'sale.badel',
+		# 	'type': 'ir.actions.act_window',
+		# }
 	@api.multi
 	def action_confirm_undo(self):
 		rec = self.env['sale.badel'].search([('id','=', self.id)]).unlink()

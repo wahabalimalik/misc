@@ -1,4 +1,7 @@
-.badel{
-	font-weight: bold;
-	font-size: 16px;
+body .text-info {
+    color: white !important;
+    background-color: #4f6792 !important;
+}
+body .text-danger {
+    background-color: aquamarine !important;
 }

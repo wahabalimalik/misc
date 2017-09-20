@@ -10,13 +10,12 @@ class Salebadel(models.Model):
 	sale_person = fields.Many2one('res.users','Sale Person')
 	payment_type = fields.Selection([('dd','DD'),('cc','CC')],default='dd',string="Payment Type")
 	balance = fields.Integer(readonly = "1",compute='_compute_balance')
-	sale_budget = fields.Integer('Sale Budget',readonly="1")
+	sale_budget = fields.Integer('Sale Budget')
 	customer_name = fields.Many2one('res.partner','Customer',readonly="1")
 	delivery_type = fields.Selection([('p','Pick up'),('d','Delivery')],default='d',string="Delivery Type")
 	# date_approved = fields.Date()
 	completion_date = fields.Date('Due Date')
-	job_status = fields.Selection([('q','Queue'),('f','Finished'),('in','In Production')],string="Job status")
-	completed_job = fields.Selection([('w','Waiting Approval'),('d','In Designing'),('p','In Production'),('r','Ready')],default="w",string="Job Status")
+	job_status = fields.Selection([('w','Waiting Approval'),('d','In Designing'),('p','In Production'),('f','Finished')],default="w",string="Job Status")
 	invoiced_job = fields.Selection([('y','Yes'),('n','No')],string="Job Invoiced")
 	filled_job = fields.Selection([('y','Yes'),('n','No')],string="Job Filled")
 	# varient = fields.Float('Variant')
@@ -25,19 +24,28 @@ class Salebadel(models.Model):
 	urgent = fields.Selection([('Yes','Yes'),('No','No')],default="No",string="Urgent")
 	notes = fields.Text()
 	today = fields.Date().today()
+	total_budget = fields.Integer(readonly = "1",compute='_compute_budget')
+
+	@api.depends('varient')
+	def _compute_budget(self):
+		for y in self:
+			y.total_budget = y.sale_budget
+			if y.varient:
+				for x in y.varient:
+					y.total_budget = y.total_budget + x.varient
 
 	@api.multi
 	@api.depends('varient','payment')
 	def _compute_balance(self):
+		for y in self:
+			y.balance = y.sale_budget
+			if y.varient:
+				for x in y.varient:
+					y.balance = y.balance + x.varient
 
-		self.balance = self.sale_budget
-		if self.varient:
-			for x in self.varient:
-				self.balance = self.balance + x.varient
-
-		if self.payment:
-			for x in self.payment:
-				self.balance = self.balance - x.payment
+			if y.payment:
+				for x in y.payment:
+					y.balance = y.balance - x.payment
 
 	@api.multi
 	def action_confirm(self):
