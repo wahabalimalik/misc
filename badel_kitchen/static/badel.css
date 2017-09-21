@@ -5,3 +5,6 @@ body .text-info {
 body .text-danger {
     background-color: aquamarine !important;
 }
+.fa-arrows:before{content: "\f255";}
+.o_list_number{text-align: left; white-space: nowrap;}
+.o_list_view{text-align: left; white-space: nowrap;}

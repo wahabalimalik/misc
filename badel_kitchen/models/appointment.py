@@ -6,13 +6,14 @@ class appointmetSet(models.Model):
 	_name='appointment.set'
 
 	name = fields.Many2one('res.partner','Customer',required=True)
-	appoint_date = fields.Datetime(string="Appoint Date",default=lambda self: fields.datetime.now())
+	appoint_date = fields.Datetime(string="Appoint Date")
+	appoint_create = fields.Date(string="Appoint Creation", readonly="1" ,default=lambda self: fields.datetime.now())
 	presentation_date = fields.Datetime(string="Presentation Date")
 	job_oppor = fields.Selection([('high','High'),('low','Low'),('normal','Normal')],default='normal',string="Opportunity")
 	appoint_notes = fields.Text('Important Notes')
-	sale_person = fields.Many2one('res.users','Sale Person',required=True)
+	sale_person = fields.Many2one('res.users','Sale Person',domain=[('job_title','=','1')],required=True)
 	currency_id = fields.Many2one('res.currency', string='Currency', default=3)
-	budget = fields.Monetary(currency_field='currency_id',string='Budget Currently')
+	budget = fields.Monetary(currency_field='currency_id',string='Budget')
 	description = fields.Char(string="Description of Work")
 	call_status = fields.Selection([('y','Yes'),('n','No')],string="Called Customer")
 	today = fields.Date().today()
@@ -40,7 +41,7 @@ class appointmetSet(models.Model):
 				'customer_name': self.name.id,
 	            'sale_person': self.sale_person.id,
 	            'sale_budget': self.budget,
-	            'name': 'Order # %s' %(self.id),
+	            'name': 'Job # %s' %(self.id),
 	            'sale_approved_date': self.today,
 	            'completion_date': self.completion_date,
 
@@ -61,5 +62,5 @@ class appointmetSet(models.Model):
 		rec = self.env['sale.badel'].search([('id','=', self.id)]).unlink()
 		self.write({'switch': 'onn'})
 
-	sequence = fields.Integer(string ='Sequence')
+	sequence = fields.Integer(string ='Job')
 	_order   = 'sequence'

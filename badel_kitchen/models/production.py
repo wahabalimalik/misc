@@ -4,7 +4,7 @@ from odoo import models, fields, api
 class Productbadel(models.Model):
 	_name = "production.badel"
 
-	name = fields.Char('Sequence',readonly="1")
+	name = fields.Char('Job',readonly="1")
 	cutting_date = fields.Date()
 	edging_date = fields.Date()
 	assembly_date = fields.Date()
@@ -24,5 +24,5 @@ class Productbadel(models.Model):
 		design = self.env['sale.badel'].search([('name' ,'=',self.name)])
 		design.write({'job_status': self.job_status})
 
-	sequence = fields.Integer(string ='Sequence')
+	sequence = fields.Integer(string ='Job')
 	_order   = 'sequence'

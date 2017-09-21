@@ -31,6 +31,16 @@
         </xpath>
       </field>
     </record>
+    <record model="ir.ui.view" id="user_instructor_form_view">
+      <field name="name">user.instructor</field>
+      <field name="model">res.users</field>
+      <field name="inherit_id" ref="base.view_users_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='sel_groups_3_4']" position="after">
+          <field name="job_title"/>
+        </xpath>
+      </field>
+    </record>
 
     <record model="ir.ui.view" id="appointment_form_view">
       <field name="name">appointment.set.form</field>
@@ -50,6 +60,7 @@
               <group>
                 <field name="name"/>
                 <field name="switch"  invisible="1"/>
+                <field name="appoint_create"/>
                 <field name="appoint_date"/>
                 <field name="presentation_date"/>
                 <field name="job_oppor" widget="selection"/>
@@ -102,6 +113,7 @@
                 </h1>
             </div>
             <field name="balance"/>
+            <field name="currency_id" invisible="1"/>
             <group>
               <group>
                 <field name="customer_name"/>
@@ -114,7 +126,10 @@
               </group>
               <group>
                 <field name="urgent" widget="radio"/>
+                <field name="job_status"/>
                 <field name="completion_date"/>
+                <field name="invoiced_job"/>
+                <field name="filled_job"/>
               </group>
             </group>
             <notebook>
@@ -153,9 +168,10 @@
           <field name="customer_name"/>
           <field name="name"/>
           <field name="sale_person"/>
-          <field name="total_budget"/>
-          <field name="balance"/>
+          <!-- <field name="total_budget"/> -->
+          <field name="urgent"/>
           <field name="job_status"/>
+          <field name="completion_date"/>
           <field name="invoiced_job"/>
           <field name="filled_job"/>
         </tree>
@@ -182,6 +198,10 @@
               <field name="urgent"/>
               <field name="customer_name"/>
               <field name="job_status"/>
+              <field name="first_desing"/>
+              <field name="second_design"/>
+              <field name="third_design"/>
+              <field name="fourth_desing"/>
               <field name="notes"/>
             </group>
             </group>
@@ -202,6 +222,10 @@
               <field name="sales_person"/>
               <field name="customer_name"/>
               <field name="job_status"/>
+              <field name="first_desing"/>
+              <field name="second_design"/>
+              <field name="third_design"/>
+              <field name="fourth_desing"/>
           </tree>
         </field>
     </record>
