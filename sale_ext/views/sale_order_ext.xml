@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+  	<record model="ir.ui.view" id="sale_ext.sale_order_form_ext">
+      <field name="name">sale_ext sale_order_form_ext</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+
+        <xpath expr="//tree/field[@name='name']" position="after">
+            <field name="percentage_allownce"/>
+        </xpath>
+      </field>
+    </record>
+
+  </data>
+</odoo>
