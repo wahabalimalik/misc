@@ -1,0 +1,235 @@
+<odoo>
+      <template id="assets_button_ext" name="badel_kitchen assets button" inherit_id="web.assets_backend" >
+        <xpath expr="." position="inside">
+        <link rel="stylesheet" type="text/css" href="/lotto/static/lotto.css"/>
+        </xpath>
+      </template>
+  <data>
+
+    <!-- Views -->
+      <!-- Lottery  -->
+        <!-- Form -->
+          <record model="ir.ui.view" id="lottery_form_view">
+            <field name="name">lottery.set.form</field>
+            <field name="model">lottery.lotto</field>
+            <field name="arch" type="xml">
+              <form string="Appoint Form">
+                <header>
+                 <button name="action_confirm" attrs="{'invisible': [('status','!=', False)]}" string="Close" class="oe_stat_button" type="object" />
+                 <button name="action_update" attrs="{'invisible': [('status','=', False)]}" string="Update" class="oe_stat_button" type="object" />
+                  <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                  <group>
+                    <group>
+                      <field name="name"/>
+                      <field name="status" invisible="1"/>
+                      <field name="start_date"/>
+                      <field name="end_date"/>
+                      <field name="change_default_limit"/>
+                      <field name="max_limit" attrs="{'invisible': [('change_default_limit','=', False)]}"/>
+                    </group>
+                    <group>
+                      <field name="winning_num" />
+                      <field name="winning_count" readonly="1"/>
+                      <field name="total_lottery_sale" readonly="1"/>
+                    </group>
+                  </group>
+                  <notebook>
+                    <page string="Winning List" attrs="{'invisible': [('state', '!=', 'close')]}">
+                      <field name="winlist" readonly="1">
+                          <tree editable="bottom">
+                              <field name="name" required="1" />
+                              <field name="bet_amount" sum="Total"/>
+                              <field name="bet_unique"/>
+                              <field name="branch"/>
+                          </tree>
+                      </field>
+                    </page>
+
+                    <page string="Bets">
+                      <field name="bets">
+                          <tree editable="bottom">
+                              <field name="name" required="1"/>
+                              <field name="bet_amount" sum="Total"/>
+                              <field name="bet_unique"/>
+                              <field name="branch"/>
+                          </tree>
+                      </field>
+                    </page>
+
+                    <page string="Blacklist Numbers">
+                      <field name="blacklist">
+                          <tree editable="bottom">
+                              <field name="name" />
+                          </tree>
+                      </field>
+                    </page>
+                    <page string="Bets Count">
+                      <field name="bet_counts">
+                          <tree editable="bottom">
+                              <field name="name" required="1" />
+                              <field name="bet_nubmer"/>
+                          </tree>
+                      </field>
+                    </page>
+                    
+                  </notebook>
+                </sheet>
+              </form>
+            </field>
+          </record>
+        <!-- Tree -->
+          <record model="ir.ui.view" id="lottery_tree_view">
+            <field name="name">lottery.set.tree</field>
+            <field name="model">lottery.lotto</field>
+            <field name="arch" type="xml">
+              <tree>
+                <field name="name"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="total_lottery_sale" sum="Total" readonly="1"/>
+              </tree>
+            </field>
+          </record>
+
+      <!-- Usrs Ext -->
+        <record model="ir.ui.view" id="user_custom_form_view">
+          <field name="name">user.custom</field>
+          <field name="model">res.users</field>
+          <field name="inherit_id" ref="base.view_users_form"/>
+          <field name="arch" type="xml">
+            <xpath expr="//field[@name='sel_groups_3_4']" position="after">
+              <field name="branch_name"/>
+              <field name="urole"/>
+            </xpath>
+          </field>
+        </record>
+
+      <!-- Oprator -->
+        <!-- Form -->
+          <record model="ir.ui.view" id="lottery_operator_form_view">
+            <field name="name">lottery.operator.form</field>
+            <field name="model">branch.lottery</field>
+            <field name="arch" type="xml">
+              <form string="Appoint Form">
+                <header>
+                </header>
+                <sheet>
+                  <group>
+                    <group>
+                      <field name="name"/>
+                      <field name="bet_code"/>
+                      <field name="date"/>
+                      <field name="branch_name" invisible='1'/>
+                    </group>
+                    <group>
+                      <field name="bet_amount"/>
+                      <field name="bet" />
+                    </group>
+                  </group>
+                </sheet>
+              </form>
+            </field>
+          </record>
+
+        <!-- Tree -->
+          <record model="ir.ui.view" id="lottery_operator_tree_view">
+            <field name="name">lottery.operator.tree</field>
+            <field name="model">branch.lottery</field>
+            <field name="arch" type="xml">
+              <tree>
+                <field name="name"/>
+                <field name="bet_code"/>
+                <field name="branch_name" invisible='1'/>
+                <field name="bet_amount"/>
+                <field name="bet" />
+              </tree>
+            </field>
+          </record>
+
+      <!-- Lottery Name -->
+        <record model="ir.ui.view" id="lottery_name_form_view">
+            <field name="name">lottery.name.form</field>
+            <field name="model">lottery.name</field>
+            <field name="arch" type="xml">
+              <form string="Appoint Form">
+                <sheet>
+                    <group>
+                      <field name="name"/>
+                      <field name="num_limit"/>
+                    </group>
+                </sheet>
+              </form>
+            </field>
+        </record>
+
+    <!-- Action -->
+
+      <record model="ir.actions.act_window" id="action_list_lottery">
+        <field name="name">Current Lotteries</field>
+        <field name="res_model">lottery.lotto</field>
+        <field name="domain">[('state', '!=', 'close')]</field>
+        <field name="view_mode">tree,form</field>
+      </record>
+
+      <record model="ir.actions.act_window" id="action_old_lottery">
+        <field name="name">Old Lotteries</field>
+        <field name="res_model">lottery.lotto</field>
+        <field name="domain">[('state', '!=', 'open')]</field>
+        <field name="view_mode">tree,form</field>
+      </record>
+
+      <record model="ir.actions.act_window" id="action_operator_list_lottery">
+        <field name="name">Operator Portal</field>
+        <field name="tag">lotto.main</field>
+        <field name="res_model">branch.lottery</field>
+        <field name="view_mode">form</field>
+      </record>
+
+      <record model="ir.actions.act_window" id="action_lottery_sold">
+        <field name="name">Lottory Sold</field>
+        <field name="tag">lotto.main</field>
+        <field name="res_model">branch.lottery</field>
+        <field name="view_mode">tree,form</field>
+      </record>
+
+    <!-- Menuitems -->
+      <!-- Main -->
+        <menuitem id="main_lottery_top_1_menu" web_icon="note,static/description/icon.png" name="Lottery"/>
+        
+        <!-- Child Menus -->
+          <menuitem id="main_lottery_top_menu" parent="main_lottery_top_1_menu" name="Lotteries"/>
+          <!-- Action Menus -->
+            <menuitem 
+              id="main_current_lottery" 
+              parent="main_lottery_top_menu" 
+              name="Current Lotteries" 
+              action="action_list_lottery"
+            />
+            <menuitem 
+              id="main_old_lottery" 
+              parent="main_lottery_top_menu" 
+              name="Old Lotteries" 
+              action="action_old_lottery"
+            />
+
+        <!-- Child Menus -->
+          <menuitem id="main_lottery_top_2_menu" parent="main_lottery_top_1_menu" name="Branch Portal"/>
+          <!-- Action Menus -->
+            <menuitem 
+              id="main_lottery_menu_1" 
+              parent="main_lottery_top_2_menu" 
+              name="Operator Portal"
+              action="action_operator_list_lottery"
+            />
+
+            <menuitem 
+              id="lottery_sold" 
+              parent="main_lottery_top_2_menu" 
+              name="Lottery Sold"
+              action="action_lottery_sold"
+            />
+  
+  </data>
+</odoo>
