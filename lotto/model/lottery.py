@@ -7,7 +7,7 @@ class lotto(models.Model):
 	_name = 'lottery.lotto'
 
 	name = fields.Many2one('lottery.name','Lottery Name')
-	winning_num  = fields.Char('Winning Number')
+	winning_num  = fields.Char('Winning Number', compute='_compute_lottery_win_num')
 	start_date = fields.Datetime('Start Date')
 	end_date = fields.Datetime('End Date')
 	winning_count = fields.Char('Total Wins')
@@ -20,6 +20,39 @@ class lotto(models.Model):
 	bet_counts = fields.One2many('bet.count', 'count_id')
 	change_default_limit = fields.Boolean(default = False)
 	max_limit = fields.Integer(default=1000)
+	ez2 = fields.Char("EZ2")
+	d4 = fields.Char("4D")
+	swetres = fields.Char()
+	fields_selector = fields.Selection([('ez2', 'Ez2'),('d4', 'D4'), ('swetres', 'Swetres')])
+
+	@api.constrains('ez2','d4','swetres')
+	def _check_size(self):
+		if self.ez2:
+			if "_" in self.ez2:
+				raise exceptions.ValidationError(_('Not valid number'))
+		if self.d4:
+			if "_" in self.d4:
+				raise exceptions.ValidationError(_('Not valid number'))
+		if self.swetres:
+			if "_" in self.swetres:
+				raise exceptions.ValidationError(_('Not valid number'))
+
+
+	@api.onchange('name')
+	def onchange_bet(self):
+		if self.name:
+			if self.name.name == 'ez2':
+				self.fields_selector = 'ez2'
+			elif self.name.name == '4D':
+				self.fields_selector = 'd4'
+			elif self.name.name == 'swetres':
+				self.fields_selector = 'swetres'
+
+	@api.depends('ez2','d4','swetres')
+	def _compute_lottery_win_num(self):
+		if self.ez2 or self.d4 or self.swetres:
+			self.winning_num = self.ez2 or self.d4 or self.swetres
+
 
 	@api.multi
 	def action_confirm(self):

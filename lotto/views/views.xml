@@ -30,7 +30,11 @@
                       <field name="max_limit" attrs="{'invisible': [('change_default_limit','=', False)]}"/>
                     </group>
                     <group>
-                      <field name="winning_num" />
+                      <field name="winning_num" invisible='1'/>
+                      <field name="fields_selector" invisible='1'/>
+                      <field widget="mask" data-inputmask-mask="99-99" name="ez2" attrs="{'invisible': [('fields_selector','!=', 'ez2')]}"/>
+                      <field widget="mask" data-inputmask-mask="9-9-9-9" name="d4" attrs="{'invisible': [('fields_selector','!=', 'd4')]}"/>
+                      <field widget="mask" data-inputmask-mask="9-9-9" name="swetres" attrs="{'invisible': [('fields_selector','!=', 'swetres')]}"/>
                       <field name="winning_count" readonly="1"/>
                       <field name="total_lottery_sale" readonly="1"/>
                     </group>
@@ -125,7 +129,11 @@
                     </group>
                     <group>
                       <field name="bet_amount"/>
-                      <field name="bet" />
+                      <field name="bet" invisible='1'/>
+                      <field name="fields_selector" invisible='1'/>
+                      <field widget="mask" data-inputmask-mask="99-99" name="ez2" attrs="{'invisible': [('fields_selector','!=', 'ez2')]}"/>
+                      <field widget="mask" data-inputmask-mask="9-9-9-9" name="d4" attrs="{'invisible': [('fields_selector','!=', 'd4')]}"/>
+                      <field widget="mask" data-inputmask-mask="9-9-9" name="swetres" attrs="{'invisible': [('fields_selector','!=', 'swetres')]}"/>
                     </group>
                   </group>
                 </sheet>
